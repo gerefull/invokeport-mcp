@@ -19,7 +19,7 @@ Use Node >=22.5.0 and an MCP host that supports STDIO. Configure:
   "mcpServers": {
     "invokeport": {
       "command": "npx",
-      "args": ["-y", "https://invokeport.com/downloads/invokeport-mcp-0.2.0.tgz"],
+      "args": ["-y", "invokeport-mcp@0.2.0"],
       "env": { "INVOKEPORT_ORIGIN": "https://invokeport.com" }
     }
   }
@@ -27,7 +27,7 @@ Use Node >=22.5.0 and an MCP host that supports STDIO. Configure:
 ```
 
 On Windows, hosts that require an executable may use `cmd` with arguments
-`["/c", "npx", "-y", "https://invokeport.com/downloads/invokeport-mcp-0.2.0.tgz"]`. Alternatively install the package
+`["/c", "npx", "-y", "invokeport-mcp@0.2.0"]`. Alternatively install the package
 locally and launch Node with the absolute installed `server.mjs` path.
 Search and schema retrieval work without a key.
 
