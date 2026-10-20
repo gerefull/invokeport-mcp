@@ -2,16 +2,18 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.gerefull/invokeport",
   "title": "InvokePort",
-  "description": "Discover and call five free tools for JSON, TypeScript, CSV, OpenAPI and webhooks.",
-  "version": "0.1.0",
+  "description": "JSON Schema validation, JSON to TypeScript, CSV conversion and JSON repair for AI agents.",
+  "version": "0.2.0",
   "websiteUrl": "https://invokeport.com",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "invokeport-mcp",
-      "version": "0.1.0",
-      "transport": { "type": "stdio" },
+      "version": "0.2.0",
+      "transport": {
+        "type": "stdio"
+      },
       "environmentVariables": [
         {
           "name": "INVOKEPORT_ORIGIN",

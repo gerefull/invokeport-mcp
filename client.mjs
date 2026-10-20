@@ -1,5 +1,5 @@
 // No model provider, wallet, file credential loader or automatic retry.
-export const TOOL_IDS = ['openapi-security', 'json-schema', 'csv-json', 'json-types', 'webhook-check'];
+export const TOOL_IDS = ['openapi-security', 'json-schema', 'csv-json', 'json-types', 'webhook-check', 'json-repair', 'json-csv'];
 export const MAX_RESPONSE = 512 * 1024;
 export const MAX_DISPLAY = 32 * 1024;
 

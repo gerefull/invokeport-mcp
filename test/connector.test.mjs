@@ -13,8 +13,8 @@ const detail = { mode: 'free-beta', capability: { serviceRoutingKey: 'builtin', 
 const response = (body, status = 200) => new Response(JSON.stringify(body), { status });
 
 test('new free tools use the same fixed route and policy checks; paid and external tools stay closed', async () => {
-  assert.deepEqual(TOOL_IDS, ['openapi-security','json-schema','csv-json','json-types','webhook-check']);
-  for (const tool of ['json-types','webhook-check']) {
+  assert.deepEqual(TOOL_IDS, ['openapi-security','json-schema','csv-json','json-types','webhook-check','json-repair','json-csv']);
+  for (const tool of ['json-types','webhook-check','json-repair','json-csv']) {
     let posts=0;
     const api=createApi(config, async (url,init)=> {
       if (init.method === 'GET') return response({ ...detail, capability: { ...detail.capability, routingKey:tool } });
@@ -109,6 +109,8 @@ test('official MCP client negotiates STDIO and calls all three tools without amb
   const client = new Client({ name: 'isolated-test-client', version: '1.0.0' });
   try {
     await client.connect(transport);
+    assert.match(client.getInstructions(), /JSON repair/);
+    assert.match((await client.listTools()).tools[0].description, /JSON to TypeScript/);
     assert.deepEqual((await client.listTools()).tools.map(t => t.name), ['search_capabilities', 'get_capability', 'invoke_capability']);
     const search = await client.callTool({ name: 'search_capabilities', arguments: {} });
     assert.equal(search.structuredContent.capabilities.length, 1);
