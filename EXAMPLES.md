@@ -2,7 +2,7 @@
 
 For npm installation and MCP host settings, see README.md. The examples below
 are for contributors working from the source repository. From its root, with
-Node and npm installed, run `npm ci` and `npm run verify:site`.
+Node and npm installed, run `npm install` and `npm test`.
 
 Have the owner privately configure `INVOKEPORT_ORIGIN` and a limited
 `INVOKEPORT_API_KEY` in the process environment. The origin must point to the
@@ -61,20 +61,18 @@ an uncertain outcome; do not automatically repeat with a new attempt ID.
 ## MCP host
 
 Configure the host command as an absolute `node.exe` path and its one argument
-as the absolute `packages/mcp-connector/server.mjs` path. Supply the two private
+as the absolute `server.mjs` path. Supply the two private
 environment entries through the host's local settings. No configuration with
 real keys is included in this repository. The three tools are advertised by
 the STDIO handshake; `get_capability` must precede invocation when choosing input.
 
-## Reproducible acceptance
+## Local connector tests
 
 ```powershell
-node --test packages/mcp-connector/test/*.test.mjs
-node scripts/verify-site-owner-isolation.mjs --mcp --examples
+npm test
 ```
 
-The fixture creates a fresh database and fresh limited keys, invokes the actual
-JavaScript subprocess and system curl with a minimal environment, tests the
-invalid-input exit path, checks MCP and its journal, then revokes keys and
-removes fixture data. Secrets remain in memory and are not printed. This is
-local integration evidence, not external beta adoption or mainnet settlement.
+These tests use synthetic data and loopback HTTP fixtures. They validate
+configuration, MCP STDIO discovery, bounded responses and refusal of paid tools.
+They do not deploy the InvokePort application or prove mainnet settlement.
+The application's D1 integration suite is maintained separately.
