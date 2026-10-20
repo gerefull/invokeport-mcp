@@ -1,0 +1,34 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.gerefull/invokeport",
+  "title": "InvokePort",
+  "description": "Discover and call five free tools for JSON, TypeScript, CSV, OpenAPI and webhooks.",
+  "version": "0.1.0",
+  "websiteUrl": "https://invokeport.com",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "invokeport-mcp",
+      "version": "0.1.0",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "INVOKEPORT_ORIGIN",
+          "description": "Trusted InvokePort HTTPS origin.",
+          "value": "https://invokeport.com",
+          "isRequired": true,
+          "isSecret": false,
+          "format": "string"
+        },
+        {
+          "name": "INVOKEPORT_API_KEY",
+          "description": "Scoped tools:invoke key; needed to invoke, not for public search or schemas.",
+          "isRequired": false,
+          "isSecret": true,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}

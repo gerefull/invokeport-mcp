@@ -1,0 +1,17 @@
+{
+  "name": "invokeport-mcp",
+  "version": "0.1.0",
+  "description": "Discover and call five free InvokePort developer tools through MCP.",
+  "license": "MIT",
+  "mcpName": "io.github.gerefull/invokeport",
+  "homepage": "https://invokeport.com",
+  "bugs": { "url": "https://invokeport.com/support" },
+  "keywords": ["mcp", "mcp-server", "invokeport", "json-schema", "typescript", "openapi"],
+  "bin": { "invokeport-mcp": "server.mjs" },
+  "files": ["server.mjs", "client.mjs", "server.json", "README.md", "EXAMPLES.md", "LICENSE"],
+  "publishConfig": { "access": "public" },
+  "type": "module",
+  "scripts": { "start": "node server.mjs", "test": "node --test test/*.test.mjs" },
+  "dependencies": { "@modelcontextprotocol/sdk": "1.30.0", "zod": "4.4.3" },
+  "engines": { "node": ">=22.5.0" }
+}
