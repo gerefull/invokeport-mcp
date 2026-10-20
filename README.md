@@ -1,16 +1,78 @@
-# InvokePort MCP
+# InvokePort — data infrastructure for AI agents
 
-An MCP server for [InvokePort](https://invokeport.com). It calls no LLM and exposes exactly
-`search_capabilities`, `get_capability`, `invoke_capability`. Only the seven
-first-party built-ins are supported. No browser cookie, wallet or payment SDK
-is used. Transport: local STDIO.
+Connect once and let an agent call seven deterministic data tools through remote MCP:
+**JSON Schema validation, JSON to TypeScript, CSV to JSON, JSON repair and JSON to CSV**,
+plus OpenAPI security and webhook checks. No LLM calls or USDC payments are needed for these built-ins.
 
-Supported IDs: `openapi-security`, `json-schema`, `csv-json`, `json-types`,
-`webhook-check`, `json-repair`, `json-csv`. Existing keys do not automatically gain access to new IDs:
-the owner must explicitly add them to a policy. Paid tools and deferred external
-integrations remain unavailable through this free connector.
+## Connect with remote MCP
 
-## Install
+Endpoint: `https://invokeport.com/api/mcp`
+
+Use a client supporting Streamable HTTP and custom Authorization headers. For example,
+Claude Code's private MCP configuration can expand a privately configured environment variable:
+
+```json
+{
+  "mcpServers": {
+    "invokeport": {
+      "type": "http",
+      "url": "https://invokeport.com/api/mcp",
+      "headers": { "Authorization": "Bearer ${INVOKEPORT_API_KEY}" }
+    }
+  }
+}
+```
+
+[Client setup and key issuance](https://invokeport.com/agents).
+Discovery (`initialize` and `tools/list`) is public. Execution requires a scoped
+`tools:invoke` key, allowed tool IDs and quota; initial key setup uses wallet sign-in
+and a profile. Keep the key in private client settings, never in a prompt or tool argument.
+
+The endpoint supports legacy MCP through **2025-11-25** with SDK 1.30.0.
+It does not implement MCP 2026-07-28 or OAuth. The hosted endpoint version is 0.3.0;
+the independent local STDIO package below remains 0.2.0.
+
+Remote discovery returns seven direct tools:
+`invokeport_json_repair`, `invokeport_json_schema`, `invokeport_json_csv`,
+`invokeport_json_types`, `invokeport_csv_json`, `invokeport_openapi_security`,
+`invokeport_webhook_check`.
+Each takes `{input, attemptId}` with the actual input schema. A fresh non-secret
+16–128 character attempt ID identifies each intended call. Quota, scope, revocation
+and the existing invocation journal apply. Reserved attempts cannot execute again;
+uncertain outcomes need reconciliation, not automatic retries.
+
+## First useful agent workflow
+
+**Malformed LLM JSON → repair → validate a known schema → CSV.**
+[Run the complete example](https://invokeport.com/agents/workflows/json-pipeline)
+or download [agent-workflow.mjs](https://invokeport.com/downloads/agent-workflow.mjs).
+
+```sh
+npm install @modelcontextprotocol/sdk@1.30.0
+node agent-workflow.mjs
+# After configuring a private key allowing json-repair, json-schema and json-csv:
+node agent-workflow.mjs --run
+```
+
+Node >=22.5.0. Without `--run` this only lists tools. With it, the synthetic
+example performs three free calls and stops if schema validation fails or a result
+is unavailable. It returns a two-row CSV and three request IDs to inspect in the
+owner's journal. Each started attempt is reported before its request; no automatic retries.
+Repair is best effort, schema validation supports a bounded structural subset, and
+CSV accepts flat rows. Outputs above 32 KiB are explicitly omitted.
+
+Building an agent that needs this pipeline? Try one integration and
+[open an issue](https://github.com/gerefull/invokeport-mcp/issues)
+with the client, tool and non-sensitive error details. Never paste keys or private payloads.
+
+## Optional local STDIO connector
+
+The npm connector exposes `search_capabilities`, `get_capability` and
+`invoke_capability` rather than seven direct tools. It uses the same seven
+first-party built-ins, policies and free execution API. It calls no LLM, uses
+no browser cookies, and does not access paid or deferred external integrations.
+
+### Install STDIO
 
 Use Node >=22.5.0 and an MCP host that supports STDIO. Configure:
 
@@ -37,7 +99,7 @@ wallet message; free tools need no USDC or payment signature. Supply the key
 privately through your MCP host's secret settings. Never include it in the
 configuration committed to a repository.
 
-## Configuration
+### STDIO configuration
 
 - `INVOKEPORT_ORIGIN`: explicit trusted origin, e.g. `http://127.0.0.1:3000`
   for local development. HTTP accepts only literal loopback; remote origins
@@ -52,7 +114,7 @@ The public origin is `https://invokeport.com`; invocation requires a limited
 key issued there. The connector never enables or calls paid tools even when
 the site's paid marketplace is active.
 
-## Use
+### STDIO use
 
 Task examples in 0.2.0:
 
@@ -79,7 +141,7 @@ A successful call returns `valid: true`, `builtin: true`, `mode: "free-beta"`
 and a request ID. Without a configured key, invocation returns
 `missing_or_invalid_key` without sending a request.
 
-## Limits and verification
+### STDIO limits and verification
 
 Run `npm install` and `npm test` in this standalone source repository. The InvokePort application's temporary-D1 integration suite is maintained separately. These connector tests make no production calls.
 
